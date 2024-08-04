@@ -29,6 +29,13 @@ In this analysis, we explore the sales trends and patterns of Amazon's technolog
 
 - R (version 4.0.0 or higher)
 - RStudio
+- Packages:
+
+  - `tidyverse` (1.3.1)
+  - `lubridate` (1.7.10)
+  - `scales` (1.1.1)
+  - `rio` (0.5.16)
+  - `vtable` (1.3.0)
 
 ## Results
 The analysis reveals several key insights:
@@ -38,13 +45,6 @@ Popular products like “USB-C Charging Cable” and “Bose SoundSport Headphon
 Higher sales volumes are observed in urban areas with higher median household incomes and larger populations.
 Specific ZIP codes and cities stand out as major sales hubs, indicating targeted marketing opportunities.
 Packages and Versions
-The analysis was performed using the following R packages:
-
-`tidyverse` (1.3.1)
-`lubridate` (1.7.10)
-`scales` (1.1.1)
-`rio` (0.5.16)
-`vtable` (1.3.0)
 
 ## License
 This project is licensed under the MIT License - see the LICENSE file for details.
