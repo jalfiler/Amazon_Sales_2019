@@ -1,7 +1,6 @@
-# Amazon Sales 2019
+# Amazon Sales Data Analysis 2019
 
 This repository contains an in-depth analysis of Amazon's technology product sales in urban ZIP codes during 2019. The project explores sales trends, popular products, and the influence of demographic factors using R and various data visualization techniques.
-
 
 ## Table of Contents
 
@@ -15,27 +14,23 @@ This repository contains an in-depth analysis of Amazon's technology product sal
 - [Acknowledgments](#acknowledgments)
 - [Disclaimer](#disclaimer)
 
-  
-## License
+## Project Overview
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+In this analysis, we explore the sales trends and patterns of Amazon's technology products across various urban ZIP codes in 2019. Our goal is to uncover key insights about consumer behavior and market dynamics in different urban areas.
+
+## Data
+
+- **sales_data.Rdata**: Amazon sales data of technology products placed over several months in 2019 in select urban ZIP codes.
+- **zip_info.csv**: Demographic information for the ZIP codes included in the sales data.
+
+## Installation
 
 ### Prerequisites
 
-- R
+- R (version 4.0.0 or higher)
 - RStudio
-- Required R packages: `tidyverse`, `lubridate`, `scales`, `rio`, `vtable`
 
-### Installation
-
-1. Clone the repository:
-   ```sh
-   git clone https://github.com/yourusername/amazon-sales-data-analysis-2019.git
-
-
-----
-
-### Results
+## Results
 The analysis reveals several key insights:
 
 Sales of technology products show distinct daily and monthly trends, with significant spikes during holiday seasons.
@@ -51,11 +46,8 @@ The analysis was performed using the following R packages:
 `rio` (0.5.16)
 `vtable` (1.3.0)
 
-License
+## License
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-Acknowledgments
-I would like to thank [person/organization] for their support and [specific contribution]. The data used in this analysis was obtained from [source].
-
-Disclaimer
-The analysis presented in this document is based on the provided dataset and is intended for educational purposes only. Any conclusions drawn from this data should be considered in the context of the data's limitations. The data used in this analysis is publicly available and was obtained from [source]. All efforts have been made to ensure the accuracy of the data, but no guarantees are provided.
+## Disclaimer
+The analysis presented in this document is based on the provided dataset and is intended for educational purposes only. Any conclusions drawn from this data should be considered in the context of the data's limitations. The data used in this analysis is publicly available and was obtained from Amazon. All efforts have been made to ensure the accuracy of the data, but no guarantees are provided.
