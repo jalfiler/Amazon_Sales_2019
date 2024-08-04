@@ -1,0 +1,17 @@
+# History files
+.Rhistory
+.RData
+
+# RStudio files
+.Rproj.user
+.Rproj
+
+# Data files
+data/*.csv
+data/*.Rdata
+
+# Output files
+results/*.png
+
+# System files
+.DS_Store
