@@ -37,11 +37,12 @@ In this analysis, we explore the sales trends and patterns of Amazon's technolog
 ## Results
 The analysis reveals several key insights:
 
-Sales of technology products show distinct daily and monthly trends, with significant spikes during holiday seasons.
-Popular products like “USB-C Charging Cable” and “Bose SoundSport Headphones” drive a large portion of sales.
-Higher sales volumes are observed in urban areas with higher median household incomes and larger populations.
-Specific ZIP codes and cities stand out as major sales hubs, indicating targeted marketing opportunities.
-Packages and Versions
+The analysis reveals several key insights:
+
+  - Sales of technology products show distinct daily and monthly trends, with significant spikes during holiday seasons.
+  - Popular products like “USB-C Charging Cable” and “Bose SoundSport Headphones” drive a large portion of sales.
+  - Higher sales volumes are observed in urban areas with higher median household incomes and larger populations.
+  - Specific ZIP codes and cities stand out as major sales hubs, indicating targeted marketing opportunities.
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
