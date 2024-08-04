@@ -33,6 +33,7 @@ In this analysis, we explore the sales trends and patterns of Amazon's technolog
   - `scales` (1.1.1)
   - `rio` (0.5.16)
   - `vtable` (1.3.0)
+  - `kableExtra` (1.4.0)
 
 ## Results
 The analysis reveals several key insights:
