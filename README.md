@@ -7,11 +7,8 @@ This repository contains an in-depth analysis of Amazon's technology product sal
 - [Project Overview](#project-overview)
 - [Data](#data)
 - [Installation](#installation)
-- [Usage](#usage)
 - [Results](#results)
-- [Packages and Versions](#packages-and-versions)
 - [License](#license)
-- [Acknowledgments](#acknowledgments)
 - [Disclaimer](#disclaimer)
 
 ## Project Overview
@@ -47,7 +44,7 @@ Specific ZIP codes and cities stand out as major sales hubs, indicating targeted
 Packages and Versions
 
 ## License
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License - see the LICENSE file for details
 
 ## Disclaimer
 The analysis presented in this document is based on the provided dataset and is intended for educational purposes only. Any conclusions drawn from this data should be considered in the context of the data's limitations. The data used in this analysis is publicly available and was obtained from Amazon. All efforts have been made to ensure the accuracy of the data, but no guarantees are provided.
