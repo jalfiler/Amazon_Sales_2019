@@ -17,8 +17,8 @@ In this analysis, we explore the sales trends and patterns of Amazon's technolog
 
 ## Data
 
-- **sales_data.Rdata**: Amazon sales data of technology products placed over several months in 2019 in select urban ZIP codes.
-- **zip_info.csv**: Demographic information for the ZIP codes included in the sales data.
+- `sales_data.Rdata`: Amazon sales data of technology products placed over several months in 2019 in select urban ZIP codes.
+- `zip_info.csv`: Demographic information for the ZIP codes included in the sales data.
 
 ## Installation
 
