@@ -1,0 +1,405 @@
+---
+title: "Data Translation Challenge"
+author: Jomaica Lei
+format: html
+editor: visual
+---
+
+## Amazon
+
+In this assignment, you will be given a dataset of [Amazon](https://a1029-70891957.cluster88.canvas-user-content.com/courses/1029~1615651/files/1029~70891957/course%20files/amazon.com) sales of technology products placed over several months in 2019 in a select number of urban ZIP codes.
+
+## Data
+
+### sales_data.Rdata
+
+`sales_data.Rdata` can be loaded in using the `import()` function from the **rio** package. Put the file in your working directory (generally, the same folder you’ve saved your .RMD file in; you can then go Session →→ Set Working Directory to be sure), and load it in:
+
+```{r}
+library(rio)
+sales <- import('sales_data.Rdata')
+```
+
+Let's take a quick look:
+
+```{r}
+head(sales)
+```
+
+This data set contains eight variables:
+
+-   `Product`, the product that has been ordered
+
+-   `Quantity`, how many of the product was ordered (note this is a string, you’ll want to fix that!)
+
+-   `PriceEach`, the price of each item (note this is a string, you’ll want to fix that!)
+
+-   `DateTime` and `Date`, when the order was placed. `DateTime` includes both day and time-of-day when the order was placed, while `Date` is just the date
+
+-   `ZIP`, the ZIP code where the order was sent to
+
+-   `State` and `City`, the city and state where the order was sent to
+
+Let's look at some descriptive statistics:
+
+```{r}
+library(vtable)
+vtable(sales, lush = TRUE, factor.limit = 9, char.values = TRUE)
+```
+
+-   We can first see that `Quantity` and `PriceEach` are both stored as character variables, we’ll have to do something about that (hint: `as.numeric()`).
+
+-   We can also see that the data covers from January 2019 through December 2019
+
+-   We also see that a limited set of only 9 ZIP codes are covered, and all of them are in urban areas (Atlanta, Austin, etc.).
+
+-   There is only one ZIP per city, and cities generally have many ZIP codes, so we are only covering a single part of each city. For example, that Seattle ZIP code is for a part of downtown Seattle. You can put the ZIP code into Google Maps if you want to see specifically where each ZIP is
+
+-   There’s a Portland in Oregon and a Portland in Maine
+
+-   If you want to work with the time element of that `DateTime` variable, note that you can pull out information like the hour and minute with **lubridate** functions like `hour()` and `minute()`. Also, as always, keep other **lubridate** functions in mind that might be handy, like `floor_date()` to “round” dates to the first day in that week/month/etc.
+
+Finally, we see in the `Product` variable that we are tracking 19 different products, not the entire lineup of everything Amazon sells. If you look at that list (perhaps with `table()` or `unique()`) you’ll see that this covers a few different kinds of products, including monitors, laptops, smartphones, and batteries. If you want to analyze some things as a group you may need to use some of the **stringr** functions we used (or perhaps `case_when()`) to pull information from the product names.
+
+### zip_info.csv
+
+`zip_info.csv` can be read in using the `import()` function. Put the file in your working directory (generally, the same folder you’ve saved your .QMD file in; you can then go Session →→ Set Working Directory to be sure), and load it in:
+
+```{r}
+zip_info <- import('zip_info.csv')
+```
+
+Let’s take a quick look. This file contains information on the population of the ZIP codes included in our data. Numbers come from the 2018 American Community Survey (ACS) estimates, i.e. they use five years of ACS data from 2014-2018 to estimate the 2018 numbers:
+
+```{r}
+vtable(zip_info, lush = TRUE)
+```
+
+What we see here are:
+
+-   `ZIP`, which is a ZIP code we can use to join this data set with the `sales` data
+
+-   `TotalPopulation`, which is the population in that ZIP code
+
+-   `MedianHHIncome`, which is the median annual household income in that ZIP. Household income calculates the total income from everyone in a given household, and then finds the median household (Income statistics use 2020 ACS instead of 2018)
+
+-   `PCIncome`, which is the annual per-capita (i.e. per-person) income in that ZIP. Per-capita income sums up all the income earned by everyone in the ZIP, and then divides it by the number of people in that ZIP (which may include a lot of non-earners, or children) (Income statistics use 2020 ACS instead of 2018)
+
+-   `MedianAge`, the median age of people in the ZIP code
+
+-   `Race_*` variables, the number of people of each broad-category race in that ZIP code. Note that races are not mutually exclusive. Someone who is, for example, both White and Asian will be counted once as White and once as Asian
+
+-   `Ethnicity_Hispanic`, which is the number of people who are Hispanic in the ZIP code. Ethnicity can overlap with any race, so someone who is, for example, both Hispanic and Black will be counted once as Hispanic and once as Black
+
+-   `Citizens`, which is the number of US citizens living in the ZIP code
+
+Some notes about this data:
+
+-   You can get the proportion of the ZIP code that is White/Black/Hispanic/Citizen/etc. by dividing that value by the `TotalPopulation`
+
+-   After you do your join with the sales data, check to make sure the join works correctly! Some of those ZIP codes have leading 0s which can sometimes be a problem (tip: convert everything to numeric, or use `str_pad()` in **stringr** to make the ZIPs five-digit-long strings, with leading 0s)
+
+-   Using this file is not required; you could do everything with the `sales` data alone and ignore this if you want
+
+### 1. Packages and Libraries
+
+```{r}
+# Load necessary libraries
+library(tidyverse)
+library(lubridate)
+library(scales)
+```
+
+### 2. Load the Datasets
+
+```{r}
+# Set wd + load datasets
+zip_info <- read_csv("zip_info.csv")
+sales <- read_csv("sales.csv")
+```
+
+### 3. Data Processing
+
+```{r}
+# Convert ZIP columns to character type
+zip_info <- zip_info %>%
+  mutate(ZIP = as.character(ZIP))
+
+sales <- sales %>%
+  mutate(ZIP = as.character(ZIP))
+
+# Convert DateTime to date format and extract date and month-year
+sales <- sales %>%
+  mutate(DateTime = ymd_hms(DateTime),
+         Date = as_date(DateTime),
+         MonthYear = floor_date(DateTime, "month"))
+
+# Merge sales data with zip_info
+merged_data <- sales %>%
+  left_join(zip_info, by = "ZIP")
+```
+
+### 4. Exploratory Data Analysis 
+
+-   Look at summary statistics of key variables.
+
+-   Distribution of sales across different ZIP codes.
+
+```{=html}
+<!-- -->
+```
+-   Popular products and their sales patterns.
+
+-   Temporal analysis of sales (e.g., sales trends over time).
+
+-   Relationship between sales and demographic factors.
+
+```{r}
+# Summary statistics for zip_info and sales
+zip_info_summary <- summary(zip_info)
+print(zip_info_summary)
+
+sales_summary <- summary(sales)
+print(sales_summary)
+```
+
+```{r}
+# Distribution of Sales by Zipcode
+sales_by_zip <- sales %>%
+  count(ZIP, sort = TRUE) %>%
+  rename(Sales = n)
+
+# Display the sales distribution by ZIP code
+```
+
+```{r}
+head(merged_data)
+```
+
+-   **ZIP Info Summary: `zip_info_summary`**
+
+    -   Provides a detailed overview of the demographic data, including population, income, age, and racial composition for each ZIP code.
+
+-   **Sales Summary:** `sales_summary`
+
+    -   Offers a glimpse into the overall sales data, including the number of products sold and price details.
+
+-   **Sales Distribution by ZIP Code:** `sales_by_zip`
+
+    -   Shows the number of sales transactions for each ZIP code, which can help identify areas with higher sales activity.
+
+-   **Merged Data: `merged_data`**
+
+    -   Combines sales data with demographic information, enabling deeper analysis of how demographics might influence sales patterns.
+
+### 5. Visualization
+
+-   **Sales Trends Over Time:**
+
+    -   Analyze and visualize sales trends over different time periods (e.g., daily, monthly).
+
+-   **Popular Products Analysis:**
+
+    -   Identify and visualize the most popular products and their sales distribution across different ZIP codes.
+
+-   **Demographic Influence:**
+
+    -   Explore and visualize the relationship between sales and demographic factors such as income, age, and population.
+
+-   **Sales by City and State:**
+
+    -   Visualize sales distribution across different cities and states to identify regional trends.
+
+-   **Product Sales by Time**:
+
+    -   Analyze how the sales of top products vary over time to identify any seasonal or periodic trends.
+
+#### 5.1 Sales Trend Over Time
+
+Visualize sales trends over time to identify any patterns or spikes in sales activity. (Daily, Monthly)
+
+```{r}
+# Daily sales trend
+daily_sales <- sales %>%
+  group_by(Date) %>%
+  summarize(Sales = n())
+
+ggplot(daily_sales, aes(x = Date, y = Sales)) +
+  geom_line(color = "red") +
+  labs(title = "Daily Sales Trend", x = "Date", y = "Number of Sales") +
+  theme_minimal() +
+   theme(plot.title = element_text(hjust = 0.5))
+
+# Monthly sales trend
+monthly_sales <- sales %>%
+  group_by(MonthYear) %>%
+  summarize(Sales = n())
+
+ggplot(monthly_sales, aes(x = MonthYear, y = Sales)) +
+  geom_line(color = "red") +
+  labs(title = "Monthly Sales Trend", x = "Month-Year", y = "Number of Sales") +
+  theme_minimal() +
+   theme(plot.title = element_text(hjust = 0.5))
+```
+
+-   **Daily Sales Trend:**
+
+    -   The line plot shows the fluctuation of sales on a daily basis. There may be visible peaks or troughs which could correlate with specific events, holidays, or promotional periods.
+
+-   **Monthly Sales Trend:**
+
+    -   The monthly trend provides a broader view of sales activity over time, helping to identify any long-term trends or seasonal patterns.
+
+    -   A noticeable increase in sales during the holiday season in December.
+
+#### 5.2 Popular Product Analysis 
+
+Identify the top-selling products and visualize their sales distribution.
+
+```{r}
+# Top-selling products
+top_products <- sales %>%
+  count(Product, sort = TRUE) %>%
+  top_n(10, n)
+
+ggplot(top_products, aes(x = reorder(Product, n), y = n, fill = n)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  scale_y_continuous(labels = dollar_format(scale = 1, suffix = "K")) +
+  scale_fill_gradient(low = "lightblue", high = "darkblue") +
+  labs(title = "Top-Selling Products", x = "Product", y = "Number of Sales") +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5)) +
+   guides(fill = "none")
+```
+
+**Top-Selling Products:**
+
+-   The bar chart highlights the most popular products based on the number of sales from darkest to lightest color emphasizing sales. This can help identify key products driving revenue. (Focus on high-demand items)
+
+-   The top products by sales volume are identified, e.g., "USB-C Charging Cable" and "Bose SoundSport Headphones".
+
+#### 5.3 **Demographic Influence**
+
+Explore and visualize the relationship between sales and demographic factors such as median household income and total population.
+
+```{r}
+# Sales vs Median Household Income
+ggplot(merged_data, aes(x = MedianHHIncome, y = Quantity, color = Product)) +
+  geom_point(alpha = 0.6) +
+  labs(title = "Sales vs Median Household Income", x = "Median Household Income", y = "Quantity Sold") +
+  theme_minimal()
+
+# Sales vs Total Population
+ggplot(merged_data, aes(x = TotalPopulation, y = Quantity, color = Product)) +
+  geom_point(alpha = 0.6) +
+  labs(title = "Sales vs Total Population", x = "Total Population", y = "Quantity Sold") +
+  theme_minimal()
+```
+
+-   **Sales versus Median Household Income:**
+
+    -   The scatter plot shows the relationship between the quantity of products sold and the median household income in different ZIP codes. Different colors represent different products. (This can reveal purchasing power and target markets)
+
+    -   Higher sales in ZIP codes with higher median household income.
+
+-   **Sales versus Total Population:**
+
+    -   This scatter plot illustrates how the quantity of products sold correlates with the total population in various ZIP codes which helps us understand market size and potential.
+
+    -   Densely populated areas showing higher sales volumes.5.4 Sales Distribution by ZIP Code and City
+
+Visualize how sales are distributed across different ZIP codes and cities.
+
+```{r}
+# Sales distribution by ZIP code
+sales_by_zip <- sales %>%
+  count(ZIP, sort = TRUE)
+
+ggplot(sales_by_zip, aes(x = reorder(ZIP, n), y = n, fill = n)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  scale_y_continuous(labels = dollar_format(scale = 1, suffix = "K")) +
+  scale_fill_gradient(low = "lightgreen", high = "darkgreen") +
+  labs(title = "Sales Distribution by ZIP Code", x = "ZIP Code", y = "Number of Sales") +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  guides(fill = "none")
+
+# Sales distribution by city
+sales_by_city <- sales %>%
+  count(City, sort = TRUE)
+
+ggplot(sales_by_city, aes(x = reorder(City, n), y = n, fill = n)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  scale_y_continuous(labels = dollar_format(scale = 1, suffix = "K")) +
+  scale_fill_gradient(low = "lightgreen", high = "darkgreen") +
+  labs(title = "Sales Distribution by City", x = "City", y = "Number of Sales") +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  guides(fill = "none")
+```
+
+-   **Sales Distribution by ZIP Code:**
+
+    -   The count plot shows how sales are distributed across different ZIP codes, highlighting areas with higher or lower sales activity.
+
+    -   You can see that ZIP Code like 94016 and 90001 shows significant sales activity.
+
+-   **Sales Distribution by City:**
+
+    -   The count plot illustrates the distribution of sales across different cities, providing insights into regional sales performance.
+
+    -   Cities like SF and LA shows as being major sales hubs.
+
+#### 5.5 Product Sales by Time
+
+Trends in the sales of top products over time highlight any seasonal patterns, aiding in inventory and marketing planning.
+
+```{r}
+# Extract top products for detailed analysis
+top_product_list <- top_products$Product
+top_product_sales <- sales %>%
+  filter(Product %in% top_product_list)
+
+# Group sales by month-year and product
+product_monthly_sales <- top_product_sales %>%
+  group_by(MonthYear, Product) %>%
+  summarize(Sales = n(), .groups = 'drop') %>%
+  spread(Product, Sales, fill = 0)
+
+# Convert from wide to long format for ggplot
+product_monthly_sales_long <- product_monthly_sales %>%
+  gather(Product, Sales, -MonthYear)
+
+# Plot sales of top products over time
+ggplot(product_monthly_sales_long, aes(x = MonthYear, y = Sales, color = Product)) +
+  geom_line() +
+  geom_point() +
+  labs(title = "Monthly Sales Trend of Top Products", x = "Month-Year", y = "Number of Sales ($)") +
+  scale_color_viridis_d() +
+  theme_minimal()
+```
+
+**Monthly Sales Trend of Top Products:**
+
+-   The line plot shows how the sales of the top products vary over time, highlighting any seasonal patterns or trends for specific products.
+
+-   Monthly sales trends of top products highlight seasonal preferences.
+
+-   Increased sales of "Bose SoundSport Headphones" during summer months, possibly due to outdoor activities.
+
+------------------------------------------------------------------------
+
+#### Conclusion
+
+In this analysis, we explore the sales trends and patterns of Amazon's technology products across various urban ZIP codes in 2019. Our dataset includes product names, quantities sold, prices, dates, and locations of the sales, as well as demographic information for the ZIP codes. Our goal is to uncover key insights about consumer behavior and market dynamics in different urban areas.
+
+After cleaning and processing the data, we begin with a high-level overview and proceed with analyzing daily and monthly sales trends. We observe fluctuations in daily sales with noticeable peaks during certain periods, likely corresponding to events, holidays, or promotions. Monthly trends show a significant spike during the holiday season in December, indicating increased consumer spending during that time.
+
+Next, we identify the top-selling products, such as “USB-C Charging Cable” and “Bose SoundSport Headphones,” which are key drivers of revenue. We then explore the relationship between sales and demographic factors, finding that higher sales volumes are associated with ZIP codes that have higher median household incomes and larger populations. This suggests that income levels and population density play significant roles in purchasing behavior.
+
+We also visualize sales distribution across different ZIP codes and cities, highlighting areas with higher sales activity. Notably, San Francisco and Los Angeles emerge as major sales hubs. Finally, we analyze the sales trends of top products over time, uncovering seasonal preferences such as increased sales of “Bose SoundSport Headphones” during the summer months, likely due to outdoor activities.
+
+In conclusion, our analysis reveals that sales patterns are influenced by income levels, population density, and seasonal trends. These insights can help Amazon optimize inventory management and tailor marketing strategies to different urban areas, ultimately enhancing sales performance and customer satisfaction.
